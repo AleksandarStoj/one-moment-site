@@ -33,11 +33,15 @@
   .g-img{ width:100%; aspect-ratio:4/5; object-fit:cover; object-position:center 38%; border-radius:3px; }
   @media (max-width:1000px){ .work-grid{ grid-template-columns:repeat(2,1fr); } }
 
-  /* ---- Hero: full-bleed on portrait screens, framed vertical panel on desktop ---- */
+  /* ---- Hero ----
+     The video is 720x1280 (exactly 9:16). Full-bleed only works on a PORTRAIT
+     viewport; on a wide, short one it cover-crops most of the frame away.
+     So the framed 9:16 panel is used for any landscape viewport with room for
+     two columns, not just for >=1000px. Switch on shape, not width alone. */
   .hero-bg{ display:none; }
   .hero-media{ position:absolute; inset:0; overflow:hidden; }
   .hero-video{ width:100%; height:100%; object-fit:cover; object-position:center 30%; }
-  @media (min-width:1000px){
+  @media (min-width:1000px), (orientation:landscape) and (min-width:760px){
     .hero{ display:grid !important; grid-template-columns:1.02fr 0.98fr; align-items:center !important; gap:clamp(28px,4vw,60px); }
     .hero-bg{
       display:block; position:absolute; inset:0;
@@ -45,14 +49,24 @@
       filter:blur(70px) saturate(1.15); opacity:.32; transform:scale(1.2);
     }
     .hero-scrim{ background:linear-gradient(180deg, rgba(19,18,16,.72) 0%, rgba(19,18,16,.66) 60%, rgba(19,18,16,.9) 100%) !important; }
-    .hero-copy{ grid-column:1; }
+    /* Both need an explicit row: .hero-media precedes .hero-copy in the DOM, so
+       auto-placement would push the copy onto row 2 and stack them vertically. */
+    .hero-copy{ grid-column:1; grid-row:1; }
     .hero-media{
-      grid-column:2; position:relative; inset:auto; z-index:2;
+      grid-column:2; grid-row:1; position:relative; inset:auto; z-index:2;
       height:min(78vh,700px); aspect-ratio:9/16; justify-self:center;
       border-radius:8px; border:1px solid rgba(243,239,227,.16);
       box-shadow:0 34px 90px rgba(0,0,0,.6);
     }
     .hero-video{ object-position:center; }
+  }
+  /* Landscape below desktop width: the copy column is narrow and the viewport
+     short, so the fluid vw type is oversized. Scale it back so the hero fits. */
+  @media (orientation:landscape) and (min-width:760px) and (max-width:999px){
+    .hero{ min-height:0; }
+    .hero-copy h1{ font-size:clamp(34px,4.6vw,52px) !important; }
+    .hero-copy p{ margin-top:20px !important; font-size:14px !important; }
+    .hero-media{ height:min(74vh,560px); }
   }
   @media (max-width:760px){
     .nav-links a.om-link{ display:none; }
@@ -90,7 +104,7 @@
   <header id="top" class="hero" style="position:relative; min-height:92vh; display:flex; align-items:flex-end; padding:clamp(32px,6vw,72px); overflow:hidden;">
     <div class="hero-bg" aria-hidden="true"></div>
     <div class="hero-media">
-      <video class="hero-video" autoplay muted loop playsinline poster="assets/wedding-labib.jpg" aria-label="Candid wedding highlights reel">
+      <video class="hero-video" autoplay muted loop playsinline preload="metadata" poster="assets/wedding-labib.jpg" aria-label="Candid wedding highlights reel">
         <source src="assets/hero.mp4" type="video/mp4">
       </video>
     </div>
@@ -217,7 +231,7 @@
         </div>
         <div>
           <div style="font-family:'Cormorant Garamond',serif; font-size:clamp(64px,9vw,104px); font-weight:300; line-height:1; color:rgba(26,24,19,.16);">03</div>
-          <h3 style="font-family:'Cormorant Garamond',serif; font-weight:500; font-size:26px; margin:20px 0 12px;">Next morning</h3>
+          <h3 style="font-family:'Cormorant Garamond',serif; font-weight:500; font-size:26px; margin:20px 0 12px;">The next day</h3>
           <p style="font-size:15px; line-height:1.7; color:rgba(26,24,19,.64);">Your edited highlights and social-ready clips are delivered within 24 hours, ready to relive and share.</p>
         </div>
       </div>
@@ -240,13 +254,25 @@
           <li style="display:flex; align-items:baseline; gap:18px; padding:22px 0; font-family:'Cormorant Garamond',serif; font-size:clamp(20px,2.4vw,28px); font-weight:400;"><span style="font-family:'Hanken Grotesk'; font-size:12px; letter-spacing:.1em; color:var(--accent);">05</span>24-hour express delivery</li>
         </ul>
       </div>
-      <figure style="position:relative; padding:clamp(28px,4vw,48px); border:1px solid rgba(243,239,227,.14); border-radius:4px;">
-        <span style="position:absolute; top:-2px; left:32px; font-family:'Cormorant Garamond',serif; font-size:120px; line-height:1; color:var(--accent); opacity:.6;">&ldquo;</span>
-        <blockquote style="font-family:'Cormorant Garamond',serif; font-weight:400; font-size:clamp(24px,3vw,38px); line-height:1.28; margin-top:48px; text-wrap:balance;">
-          We didn&rsquo;t even notice them filming — but somehow they caught every single moment that mattered. Having it all the next morning felt unreal.
-        </blockquote>
-        <figcaption style="margin-top:30px; font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:rgba(243,239,227,.6);">A recent OneMoment couple</figcaption>
-      </figure>
+      <div style="display:flex; flex-direction:column; gap:clamp(22px,3vw,34px);">
+        <figure style="position:relative; padding:clamp(28px,4vw,48px); border:1px solid rgba(243,239,227,.14); border-radius:4px;">
+          <span style="position:absolute; top:-2px; left:32px; font-family:'Cormorant Garamond',serif; font-size:120px; line-height:1; color:var(--accent); opacity:.6;">&ldquo;</span>
+          <blockquote style="font-family:'Cormorant Garamond',serif; font-weight:400; font-size:clamp(21px,2.6vw,32px); line-height:1.3; margin-top:48px; text-wrap:balance;">
+            The content she created is beyond anything we imagined. Every photo and video brings our wedding day back to life, and receiving beautiful sneak peeks so quickly made the experience even more special.
+          </blockquote>
+          <figcaption style="display:flex; align-items:center; flex-wrap:wrap; gap:14px; margin-top:30px; font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:rgba(243,239,227,.6);">
+            <span role="img" aria-label="Five out of five stars" style="color:var(--accent); letter-spacing:.18em; font-size:11px;">&#9733;&#9733;&#9733;&#9733;&#9733;</span>Maddison
+          </figcaption>
+        </figure>
+        <figure style="padding:4px 0 4px clamp(20px,2.6vw,30px); border-left:1px solid rgba(199,167,106,.45);">
+          <blockquote style="font-family:'Cormorant Garamond',serif; font-weight:400; font-size:clamp(18px,1.9vw,23px); line-height:1.45; color:rgba(243,239,227,.82); text-wrap:balance;">
+            I&rsquo;m so thankful you were there yesterday, went above and beyond your role for me! You honestly made me feel so at ease.
+          </blockquote>
+          <figcaption style="display:flex; align-items:center; flex-wrap:wrap; gap:14px; margin-top:20px; font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:rgba(243,239,227,.6);">
+            <span role="img" aria-label="Five out of five stars" style="color:var(--accent); letter-spacing:.18em; font-size:11px;">&#9733;&#9733;&#9733;&#9733;&#9733;</span>Stephanie
+          </figcaption>
+        </figure>
+      </div>
     </div>
   </section>
 
@@ -273,7 +299,7 @@
       </details>
       <details style="border-top:1px solid rgba(26,24,19,.16);">
         <summary class="om-faq-q" style="display:flex; align-items:center; justify-content:space-between; gap:20px; padding:26px 0; font-family:'Cormorant Garamond',serif; font-size:clamp(20px,2.4vw,28px); font-weight:500;">How fast is delivery?<span class="om-plus" style="font-family:'Hanken Grotesk'; font-size:26px; font-weight:300; color:var(--accent); transition:transform .3s; flex-shrink:0;">+</span></summary>
-        <p style="padding:0 0 28px; font-size:15px; line-height:1.75; color:rgba(26,24,19,.64); max-width:62ch;">Within 24 hours. Your highlights are edited and sent the very next morning, while the day still feels close.</p>
+        <p style="padding:0 0 28px; font-size:15px; line-height:1.75; color:rgba(26,24,19,.64); max-width:62ch;">Within 24 hours. Your highlights are edited and sent the very next day, while the day still feels close.</p>
       </details>
       <details style="border-top:1px solid rgba(26,24,19,.16); border-bottom:1px solid rgba(26,24,19,.16);">
         <summary class="om-faq-q" style="display:flex; align-items:center; justify-content:space-between; gap:20px; padding:26px 0; font-family:'Cormorant Garamond',serif; font-size:clamp(20px,2.4vw,28px); font-weight:500;">How do I book?<span class="om-plus" style="font-family:'Hanken Grotesk'; font-size:26px; font-weight:300; color:var(--accent); transition:transform .3s; flex-shrink:0;">+</span></summary>
