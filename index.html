@@ -25,15 +25,37 @@
   details summary{ list-style:none; cursor:pointer; }
   details summary::-webkit-details-marker{ display:none; }
   @keyframes omRise{ from{ opacity:0; transform:translateY(22px); } to{ opacity:1; transform:translateY(0); } }
-  .g-img{ width:100%; height:100%; object-fit:cover; border-radius:3px; }
-  .hero-video{ object-position:center; }
-  @media (min-aspect-ratio: 1/1){ .hero-video{ object-position:center 22%; } }
   .logo-mono text{ font-family:'Cormorant Garamond',serif; font-weight:400; font-size:150px; fill:var(--accent); }
   .logo-mono .spark{ fill:var(--accent); }
+
+  /* ---- Gallery: tiles match the portrait shape of the source photos ---- */
+  .work-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:16px; }
+  .g-img{ width:100%; aspect-ratio:4/5; object-fit:cover; object-position:center 38%; border-radius:3px; }
+  @media (max-width:1000px){ .work-grid{ grid-template-columns:repeat(2,1fr); } }
+
+  /* ---- Hero: full-bleed on portrait screens, framed vertical panel on desktop ---- */
+  .hero-bg{ display:none; }
+  .hero-media{ position:absolute; inset:0; overflow:hidden; }
+  .hero-video{ width:100%; height:100%; object-fit:cover; object-position:center 30%; }
+  @media (min-width:1000px){
+    .hero{ display:grid !important; grid-template-columns:1.02fr 0.98fr; align-items:center !important; gap:clamp(28px,4vw,60px); }
+    .hero-bg{
+      display:block; position:absolute; inset:0;
+      background:url('assets/wedding-labib.jpg') center/cover no-repeat;
+      filter:blur(70px) saturate(1.15); opacity:.32; transform:scale(1.2);
+    }
+    .hero-scrim{ background:linear-gradient(180deg, rgba(19,18,16,.72) 0%, rgba(19,18,16,.66) 60%, rgba(19,18,16,.9) 100%) !important; }
+    .hero-copy{ grid-column:1; }
+    .hero-media{
+      grid-column:2; position:relative; inset:auto; z-index:2;
+      height:min(78vh,700px); aspect-ratio:9/16; justify-self:center;
+      border-radius:8px; border:1px solid rgba(243,239,227,.16);
+      box-shadow:0 34px 90px rgba(0,0,0,.6);
+    }
+    .hero-video{ object-position:center; }
+  }
   @media (max-width:760px){
     .nav-links a.om-link{ display:none; }
-    .g-img{ grid-column:span 6 !important; grid-row:span 1 !important; }
-    #work .work-grid{ grid-auto-rows:200px !important; }
     .svc{ padding:36px 0 !important; border-right:none !important; border-bottom:1px solid rgba(26,24,19,.12); }
     .svc:last-child{ border-bottom:none; }
   }
@@ -65,12 +87,15 @@
   </nav>
 
   <!-- HERO -->
-  <header id="top" style="position:relative; min-height:92vh; display:flex; align-items:flex-end; padding:clamp(32px,6vw,72px); overflow:hidden;">
-    <video class="hero-video" autoplay muted loop playsinline poster="assets/wedding-labib.jpg" aria-label="Candid wedding highlights reel" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover;">
-      <source src="assets/hero.mp4" type="video/mp4">
-    </video>
-    <div style="position:absolute; inset:0; background:linear-gradient(180deg, rgba(19,18,16,.55) 0%, rgba(19,18,16,.12) 32%, rgba(19,18,16,.18) 60%, rgba(19,18,16,.92) 100%); pointer-events:none;"></div>
-    <div style="position:relative; z-index:2; max-width:960px; animation:omRise .9s cubic-bezier(.2,.7,.2,1) both;">
+  <header id="top" class="hero" style="position:relative; min-height:92vh; display:flex; align-items:flex-end; padding:clamp(32px,6vw,72px); overflow:hidden;">
+    <div class="hero-bg" aria-hidden="true"></div>
+    <div class="hero-media">
+      <video class="hero-video" autoplay muted loop playsinline poster="assets/wedding-labib.jpg" aria-label="Candid wedding highlights reel">
+        <source src="assets/hero.mp4" type="video/mp4">
+      </video>
+    </div>
+    <div class="hero-scrim" style="position:absolute; inset:0; background:linear-gradient(180deg, rgba(19,18,16,.55) 0%, rgba(19,18,16,.12) 32%, rgba(19,18,16,.18) 60%, rgba(19,18,16,.92) 100%); pointer-events:none;"></div>
+    <div class="hero-copy" style="position:relative; z-index:2; max-width:960px; animation:omRise .9s cubic-bezier(.2,.7,.2,1) both;">
       <div style="display:flex; align-items:center; gap:14px; font-size:11px; letter-spacing:.28em; text-transform:uppercase; margin-bottom:26px;">
         <span style="width:30px; height:1px; background:var(--accent);"></span>
         <span style="opacity:.85;">Melbourne &middot; Weddings &amp; Events</span>
@@ -134,7 +159,7 @@
         <div class="svc" style="padding:48px 32px; border-right:1px solid rgba(26,24,19,.12);">
           <div style="font-family:'Cormorant Garamond',serif; font-size:34px; color:var(--accent); margin-bottom:18px;">03</div>
           <h3 style="font-family:'Cormorant Garamond',serif; font-weight:500; font-size:25px; margin-bottom:12px;">24-hour delivery</h3>
-          <p style="font-size:15px; line-height:1.7; color:rgba(26,24,19,.62);">Your edited highlights land the next morning — while the day is still fresh and everyone wants to relive it.</p>
+          <p style="font-size:15px; line-height:1.7; color:rgba(26,24,19,.62);">Your edited highlights land the next day — while it&rsquo;s all still fresh and everyone wants to relive it.</p>
         </div>
         <div class="svc" style="padding:48px 32px;">
           <div style="font-family:'Cormorant Garamond',serif; font-size:34px; color:var(--accent); margin-bottom:18px;">04</div>
@@ -158,15 +183,15 @@
         </div>
         <p style="max-width:340px; font-size:14px; line-height:1.7; color:rgba(243,239,227,.6);">A glimpse of recent celebrations — see more on <a href="https://instagram.com/onemomentexperiences" target="_blank" rel="noopener" class="om-link" style="color:var(--accent);">Instagram</a>.</p>
       </div>
-      <div class="work-grid" style="display:grid; grid-template-columns:repeat(12,1fr); grid-auto-rows:230px; gap:16px;">
-        <img class="g-img g1" src="assets/proposal.jpg" alt="A surprise proposal styled with candles and flowers" style="grid-column:span 7; grid-row:span 2;">
-        <img class="g-img g2" src="assets/bridal-shower-lily.jpg" alt="Details from Lily's bridal shower" style="grid-column:span 5; grid-row:span 1;">
-        <img class="g-img g3" src="assets/engagement-nk.jpg" alt="The engagement of Nicholas and Katerina" style="grid-column:span 5; grid-row:span 1;">
-        <img class="g-img g4" src="assets/ceremony-greek.jpg" alt="A traditional Greek Orthodox wedding ceremony" style="grid-column:span 4; grid-row:span 1;">
-        <img class="g-img g5" src="assets/bridesmaids-reveal.jpg" alt="Bridesmaids seeing the bride for the first time" style="grid-column:span 4; grid-row:span 1;">
-        <img class="g-img g6" src="assets/event-giacinta.jpg" alt="Giacinta's birthday celebration" style="grid-column:span 4; grid-row:span 1;">
-        <img class="g-img g7" src="assets/bridal-party-entrance.jpg" alt="An iconic bridal party entrance on the dance floor" style="grid-column:span 8; grid-row:span 1;">
-        <img class="g-img g8" src="assets/proposal-level80.jpg" alt="A proposal at Level 80 overlooking the city lights" style="grid-column:span 4; grid-row:span 1;">
+      <div class="work-grid">
+        <img class="g-img" src="assets/proposal.jpg" alt="A surprise proposal styled with candles and flowers">
+        <img class="g-img" src="assets/bridal-party-entrance.jpg" alt="An iconic bridal party entrance on the dance floor">
+        <img class="g-img" src="assets/proposal-level80.jpg" alt="A proposal at Level 80 overlooking the city lights">
+        <img class="g-img" src="assets/bridesmaids-reveal.jpg" alt="Bridesmaids seeing the bride for the first time">
+        <img class="g-img" src="assets/ceremony-greek.jpg" alt="A traditional Greek Orthodox wedding ceremony">
+        <img class="g-img" src="assets/bridal-shower-lily.jpg" alt="Details from Lily's bridal shower">
+        <img class="g-img" src="assets/engagement-nk.jpg" alt="The engagement of Nicholas and Katerina">
+        <img class="g-img" src="assets/event-giacinta.jpg" alt="Giacinta's birthday celebration">
       </div>
     </div>
   </section>
